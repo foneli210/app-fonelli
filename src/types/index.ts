@@ -4,18 +4,19 @@ import {ImageSourcePropType} from 'react-native';
 export interface RootTabsProps {
   [key: string]: undefined;
   Inicio: undefined;
-  //   Hoteles: undefined;
-  //   Tienda: undefined;
-  //   Rutas: undefined;
-  //   Perfil: undefined;
 }
 
 export interface RootStackProps extends ParamListBase {
-  Home: undefined;
-  //   HotelDetails: {hotelId: string};
-  //   PathwaysDetails: {pathwayId: string};
-  //   ProductDetails: {productId: string};
-  // [key: string]: undefined | { hotelId: string };
+  Splash: undefined;
+  Welcome: undefined;
+  Login: undefined;
+  Dashboard: undefined;
+  NewOrder: undefined;
+  OrderHistory: undefined;
+  EditOrder: {
+    orderId: string;
+    onOrderUpdated: () => Promise<void>;
+  };
 }
 
 export interface IconImageProps {

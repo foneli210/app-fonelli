@@ -1,199 +1,61 @@
-// import React from 'react';
-// import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-// import {createStackNavigator} from '@react-navigation/stack';
-// import {RootStackProps, RootTabsProps} from '../types';
-// import Login from '../views/Auth/login';
-// import Responsive from '../utils/responsive';
-// import {Colors} from '../theme/colors';
-// import IconImage from '../utils/iconImage';
-// import {Icons} from '../assets/icons';
-// import Home from '../components/home';
-
-// const Tab = createBottomTabNavigator<RootTabsProps>();
-// const Stack = createStackNavigator<RootStackProps>();
-
-// const RouterTabs = () => {
-//   return (
-//     <Tab.Navigator
-//       initialRouteName="Inicio"
-//       screenOptions={{
-//         tabBarLabelStyle: {
-//           fontWeight: '800',
-//           fontSize: Responsive(12),
-//           fontFamily: 'Gilroy-ExtraBold',
-//         },
-//         tabBarActiveTintColor: Colors.textPrimary,
-//         tabBarHideOnKeyboard: true,
-//         tabBarItemStyle: {
-//           gap: 20,
-//           flexDirection: 'column',
-//           alignItems: 'center',
-//           justifyContent: 'center',
-//         },
-//         tabBarStyle: {
-//           height: '9%',
-//           alignItems: 'center',
-//           paddingTop: Responsive(30),
-//           paddingBottom: Responsive(15),
-//         },
-//       }}>
-//       <Tab.Screen
-//         name="Home"
-//         component={Home}
-//         options={{
-//           title: 'general.home',
-//           tabBarIcon: ({size, focused}) => (
-//             <IconImage
-//               size={size}
-//               source={focused ? Icons.tabs.active.home : Icons.tabs.active.home}
-//             />
-//           ),
-//           headerShown: false,
-//         }}
-//       />
-//       <Tab.Screen
-//         name="Hotels"
-//         component={Home}
-//         options={{
-//           title: 'general.hotels',
-//           tabBarIcon: ({size, focused}) => (
-//             <IconImage
-//               size={size}
-//               source={focused ? Icons.tabs.active.home : Icons.tabs.active.home}
-//             />
-//           ),
-//           headerShown: false,
-//         }}
-//       />
-//     </Tab.Navigator>
-//   );
-// };
-
-// const Router = () => {
-//   return (
-//     <Stack.Navigator>
-//       <Stack.Screen
-//         options={{headerShown: false}}
-//         name="Login"
-//         component={Login as never}
-//       />
-//       <Stack.Screen
-//         options={{headerShown: false}}
-//         name="Main"
-//         component={RouterTabs}
-//       />
-//     </Stack.Navigator>
-//   );
-// };
-
-// export default Router;
-
-import React, {useEffect, useState} from 'react';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import {RootStackProps, RootTabsProps} from '../types';
-import Login from '../views/Auth/login';
-import Responsive from '../utils/responsive';
-import {Colors} from '../theme/colors';
-import IconImage from '../utils/iconImage';
-import {Icons} from '../assets/icons/icons';
-import Home from '../views/home';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {RootStackProps} from '../types';
 
-const Tab = createBottomTabNavigator<RootTabsProps>();
+import LoginScreen from '../views/Auth/login';
+import SplashScreen from '../views/general/SplashScreen';
+import WelcomeScreen from '../views/general/WelcomeScreen';
+import DashboardScreen from '../views/Auth/dashboard';
+import NewOrderScreen from '../views/general/NewOrderScreen';
+import OrderHistoryScreen from '../views/general/OrderHistoryScreen';
+import EditOrderScreen from '../views/general/EditOrderScreen';
+
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const Stack = createStackNavigator<RootStackProps>();
 
-// Extraer la función para renderizar el icono del tab
-const renderIcon = (size: number, focused: boolean, icon: any) => (
-  <IconImage size={size} source={focused ? icon.active : icon.inactive} />
-);
-
-const RouterTabs = () => {
-  return (
-    <Tab.Navigator
-      initialRouteName="Inicio"
-      screenOptions={{
-        tabBarLabelStyle: {
-          fontWeight: '800',
-          fontSize: Responsive(12),
-          fontFamily: 'Gilroy-ExtraBold',
-        },
-        tabBarActiveTintColor: Colors.textPrimary,
-        tabBarHideOnKeyboard: true,
-        tabBarItemStyle: {
-          gap: 20,
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-        },
-        tabBarStyle: {
-          height: '9%',
-          alignItems: 'center',
-          paddingTop: Responsive(30),
-          paddingBottom: Responsive(15),
-        },
-      }}>
-      <Tab.Screen
-        name="Home"
-        component={Home}
-        options={{
-          title: 'general.home',
-          tabBarIcon: ({size, focused}) =>
-            renderIcon(size, focused, {
-              active: Icons.tabs.active.home,
-              inactive: Icons.tabs.active.home,
-            }),
-          headerShown: false,
-        }}
-      />
-      <Tab.Screen
-        name="Hotels"
-        component={Home}
-        options={{
-          title: 'general.hotels',
-          tabBarIcon: ({size, focused}) =>
-            renderIcon(size, focused, {
-              active: Icons.tabs.active.home,
-              inactive: Icons.tabs.active.home,
-            }),
-          headerShown: false,
-        }}
-      />
-    </Tab.Navigator>
-  );
-};
-
 const Router = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  // const [isLoading, setIsLoading] = useState<boolean>(true);
+  // const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  // console.log('TCL: Router -> [isLoading', isLoading);
+  // console.log('TCL: Router -> [isLoggedIn', isLoggedIn);
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      const token = await AsyncStorage.getItem('@TOKEN');
-      setIsAuthenticated(!!token);
-    };
+  // const checkLoginStatus = async () => {
+  //   try {
+  //     const userToken = await AsyncStorage.getItem('userToken');
+  //     setIsLoggedIn(!!userToken);
+  //   } catch (error) {
+  //     console.error('Error al verificar el estado de inicio de sesión:', error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
-    checkAuth();
-  }, []);
-
-  if (isAuthenticated === null) {
-    return null;
-  }
+  // useEffect(() => {
+  //   checkLoginStatus();
+  // }, []);
 
   return (
-    <Stack.Navigator>
-      {isAuthenticated ? (
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="Main"
-          component={RouterTabs}
-        />
-      ) : (
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="Login"
-          component={Login as never}
-        />
-      )}
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        cardStyle: {backgroundColor: '#FFFFFF'},
+      }}>
+      <Stack.Screen name="Splash" component={SplashScreen} />
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Welcome" component={WelcomeScreen} />
+      <Stack.Screen name="Dashboard" component={DashboardScreen} />
+      <Stack.Screen name="NewOrder" component={NewOrderScreen} />
+      <Stack.Screen name="OrderHistory" component={OrderHistoryScreen} />
+
+      <Stack.Screen
+        name="EditOrder"
+        component={EditOrderScreen}
+        options={{
+          gestureEnabled: true,
+          gestureDirection: 'horizontal',
+        }}
+      />
     </Stack.Navigator>
   );
 };
