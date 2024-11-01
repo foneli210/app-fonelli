@@ -1,4 +1,4 @@
-package com.barberos
+package com.fonelli.joyas
 import android.os.Bundle;
 
 import com.facebook.react.ReactActivity

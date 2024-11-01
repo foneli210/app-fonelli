@@ -10,31 +10,9 @@ import NewOrderScreen from '../views/general/NewOrderScreen';
 import OrderHistoryScreen from '../views/general/OrderHistoryScreen';
 import EditOrderScreen from '../views/general/EditOrderScreen';
 
-// import AsyncStorage from '@react-native-async-storage/async-storage';
-
 const Stack = createStackNavigator<RootStackProps>();
 
 const Router = () => {
-  // const [isLoading, setIsLoading] = useState<boolean>(true);
-  // const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  // console.log('TCL: Router -> [isLoading', isLoading);
-  // console.log('TCL: Router -> [isLoggedIn', isLoggedIn);
-
-  // const checkLoginStatus = async () => {
-  //   try {
-  //     const userToken = await AsyncStorage.getItem('userToken');
-  //     setIsLoggedIn(!!userToken);
-  //   } catch (error) {
-  //     console.error('Error al verificar el estado de inicio de sesión:', error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   checkLoginStatus();
-  // }, []);
-
   return (
     <Stack.Navigator
       screenOptions={{
