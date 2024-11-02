@@ -1,7 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import React, {useEffect} from 'react';
-import {View, Image, StyleSheet, Text} from 'react-native';
+import {View, Image, StyleSheet} from 'react-native';
 import {RootStackProps} from '../../types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -26,7 +26,6 @@ const SplashScreen = () => {
         style={styles.logo}
         resizeMode="contain"
       />
-      <Text style={styles.title}>Fonelli Joyería</Text>
     </View>
   );
 };

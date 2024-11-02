@@ -12,12 +12,12 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import {Ionicons} from '@expo/vector-icons';
 import {createOrder} from '../../services/api';
-// import UserProfileHeader from '../components/UserProfileHeader';
 import BottomNavBar from '../../components/BottomNavBar';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackProps } from '../../types';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {RootStackProps} from '../../types';
+import IconImage from '../../utils/iconImage';
+import {Icons} from '../../assets/icons';
 
 const NewOrderScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackProps>>();
@@ -216,7 +216,7 @@ const NewOrderScreen = () => {
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}>
-          {/* <Ionicons name="arrow-back" size={24} color="#FFFFFF" /> */}
+          <IconImage size={24} source={Icons.general.arrowLeft} />
         </TouchableOpacity>
         <Text style={styles.title}>Nuevo Pedido</Text>
       </View>

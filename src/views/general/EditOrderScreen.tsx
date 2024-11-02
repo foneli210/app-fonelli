@@ -10,15 +10,12 @@ import {
   Platform,
 } from 'react-native';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-// import {Ionicons} from '@expo/vector-icons';
-import {
-  updateOrder,
-  // canEditOrder,
-  getOrderById,
-} from '../../services/api';
+import {updateOrder, getOrderById} from '../../services/api';
 import BottomNavBar from '../../components/BottomNavBar';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackProps} from '../../types';
+import IconImage from '../../utils/iconImage';
+import {Icons} from '../../assets/icons';
 
 type EditOrderScreenRouteProp = RouteProp<RootStackProps, 'EditOrder'>;
 
@@ -156,7 +153,7 @@ const EditOrderScreen = () => {
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}>
-          {/* <Ionicons name="arrow-back" size={24} color="#FFFFFF" /> */}
+          <IconImage size={24} source={Icons.general.arrowLeft} />
         </TouchableOpacity>
         <Text style={styles.title}>Editar Pedido</Text>
       </View>

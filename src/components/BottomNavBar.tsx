@@ -5,11 +5,13 @@ import {
   Text,
   StyleSheet,
   SafeAreaView,
+  Linking,
 } from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackProps} from '../types';
-// import {Ionicons} from '@expo/vector-icons';
+import IconImage from '../utils/iconImage';
+import {Icons} from '../assets/icons';
 
 const BottomNavBar = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackProps>>();
@@ -26,10 +28,6 @@ const BottomNavBar = () => {
     return route.name === routeName;
   };
 
-  // const getIconColor = (routeName:any) => {
-  //   return isActive(routeName) ? '#24b1e7' : '#ffffff';
-  // };
-
   const getTextColor = (routeName: any) => {
     return isActive(routeName) ? '#24b1e7' : '#ffffff';
   };
@@ -39,8 +37,15 @@ const BottomNavBar = () => {
       <View style={styles.container}>
         <TouchableOpacity
           style={styles.navItem}
-          onPress={() => navigation.navigate('NewOrder')}>
-          {/* <Ionicons name={isActive('NewOrder') ? 'home' : 'home-outline'} size={24} color={getIconColor('NewOrder')} /> */}
+          onPress={() => navigation.navigate('Dashboard')}>
+          <IconImage
+            size={22}
+            source={
+              isActive('Dashboard') || isActive('NewOrder')
+                ? Icons.tab.active.home
+                : Icons.tab.inActive.home
+            }
+          />
 
           <Text style={[styles.navText, {color: getTextColor('NewOrder')}]}>
             Inicio
@@ -49,12 +54,9 @@ const BottomNavBar = () => {
 
         <TouchableOpacity
           style={styles.navItem}
-          onPress={() => navigation.navigate('Contact')}>
-          {/* <Ionicons
-            name={isActive('Contact') ? 'logo-whatsapp' : 'logo-whatsapp'}
-            size={24}
-            color={getIconColor('Contact')}
-          /> */}
+          onPress={() => Linking.openURL('https://wa.me/tunumerodewhatsapp')}>
+          <IconImage size={24} source={Icons.tab.active.contact} />
+
           <Text style={[styles.navText, {color: getTextColor('Contact')}]}>
             Contacto
           </Text>
@@ -63,11 +65,15 @@ const BottomNavBar = () => {
         <TouchableOpacity
           style={styles.navItem}
           onPress={() => navigation.navigate('OrderHistory')}>
-          {/* <Ionicons
-            name={isActive('OrderHistory') ? 'time' : 'time-outline'}
+          <IconImage
             size={24}
-            color={getIconColor('OrderHistory')}
-          /> */}
+            source={
+              isActive('OrderHistory')
+                ? Icons.tab.active.history
+                : Icons.tab.inActive.history
+            }
+          />
+
           <Text style={[styles.navText, {color: getTextColor('OrderHistory')}]}>
             Historial
           </Text>

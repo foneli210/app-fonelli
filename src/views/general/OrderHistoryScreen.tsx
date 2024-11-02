@@ -8,13 +8,11 @@ import {
   Image,
   Alert,
   Platform,
-  // Share
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-// import { Ionicons } from '@expo/vector-icons';
-// import * as FileSystem from 'expo-file-system';
-// import * as Sharing from 'expo-sharing';
-// import XLSX from 'xlsx';
+import RNFS from 'react-native-fs';
+import Share from 'react-native-share';
+import XLSX from 'xlsx';
 import {
   getCurrentUser,
   getOrders,
@@ -193,146 +191,140 @@ const OrderHistoryScreen = () => {
     }
   };
 
-  // const generateXLSFile = async (order) => {
-  //   try {
-  //     const wb = XLSX.utils.book_new();
+  const generateXLSFile = async (order: any) => {
+    try {
+      const wb = XLSX.utils.book_new();
 
-  //     const orderData = [
-  //       ['Detalles del Pedido'],
-  //       ['ID', order.id],
-  //       ['Nombre', order.nombre_pedido],
-  //       ['Estado', order.estado],
-  //       ['Modelo', order.modelo],
-  //       ['Número de Piezas', order.numero_piezas],
-  //       ['Talla', order.talla],
-  //       ['Kilataje', order.kilataje],
-  //       ['Color', order.color],
-  //       ['Inicial', order.inicial],
-  //       ['Piedra', order.piedra],
-  //       ['Largo', order.largo],
-  //       ['Observaciones', order.observaciones],
-  //       ['Fecha de Creación', new Date(order.created_at).toLocaleDateString()]
-  //     ];
+      const orderData = [
+        ['Detalles del Pedido'],
+        ['ID', order.id],
+        ['Nombre', order.nombre_pedido],
+        ['Estado', order.estado],
+        ['Modelo', order.modelo],
+        ['Número de Piezas', order.numero_piezas],
+        ['Talla', order.talla],
+        ['Kilataje', order.kilataje],
+        ['Color', order.color],
+        ['Inicial', order.inicial],
+        ['Piedra', order.piedra],
+        ['Largo', order.largo],
+        ['Observaciones', order.observaciones],
+        ['Fecha de Creación', new Date(order.created_at).toLocaleDateString()],
+      ];
 
-  //     const ws = XLSX.utils.aoa_to_sheet(orderData);
-  //     XLSX.utils.book_append_sheet(wb, ws, 'Pedido');
+      const ws = XLSX.utils.aoa_to_sheet(orderData);
+      XLSX.utils.book_append_sheet(wb, ws, 'Pedido');
 
-  //     const wbout = XLSX.write(wb, { type: 'base64', bookType: 'xlsx' });
+      const wbout = XLSX.write(wb, {type: 'base64', bookType: 'xlsx'});
 
-  //     const fileName = `Pedido_${order.id}.xlsx`;
-  //     const filePath = `${FileSystem.documentDirectory}${fileName}`;
+      const fileName = `Pedido_${order.id}.xlsx`;
+      const filePath = `${RNFS.DocumentDirectoryPath}${fileName}`;
 
-  //     await FileSystem.writeAsStringAsync(filePath, wbout, {
-  //       encoding: FileSystem.EncodingType.Base64
-  //     });
+      await RNFS.writeFile(filePath, wbout, 'ascii');
 
-  //     return filePath;
-  //   } catch (error) {
-  //     console.error('Error generando XLS:', error);
-  //     throw error;
-  //   }
-  // };
+      return filePath;
+    } catch (error) {
+      console.error('Error generando XLS:', error);
+      throw error;
+    }
+  };
 
-  // const generatePDFContent = (order:any) => {
-  //   return `
-  //     <html>
-  //       <head>
-  //         <style>
-  //           body { font-family: Arial, sans-serif; padding: 20px; }
-  //           h1 { color: #1E3A8A; }
-  //           .detail { margin: 10px 0; }
-  //           .label { font-weight: bold; }
-  //         </style>
-  //       </head>
-  //       <body>
-  //         <h1>Detalles del Pedido</h1>
-  //         <div class="detail">
-  //           <span class="label">ID:</span> ${order.id}
-  //         </div>
-  //         <div class="detail">
-  //           <span class="label">Nombre:</span> ${order.nombre_pedido}
-  //         </div>
-  //         <div class="detail">
-  //           <span class="label">Estado:</span> ${order.estado}
-  //         </div>
-  //         <div class="detail">
-  //           <span class="label">Modelo:</span> ${order.modelo}
-  //         </div>
-  //         <div class="detail">
-  //           <span class="label">Número de Piezas:</span> ${order.numero_piezas}
-  //         </div>
-  //         <div class="detail">
-  //           <span class="label">Talla:</span> ${order.talla}
-  //         </div>
-  //         <div class="detail">
-  //           <span class="label">Kilataje:</span> ${order.kilataje}
-  //         </div>
-  //         <div class="detail">
-  //           <span class="label">Color:</span> ${order.color}
-  //         </div>
-  //         <div class="detail">
-  //           <span class="label">Inicial:</span> ${order.inicial}
-  //         </div>
-  //         <div class="detail">
-  //           <span class="label">Piedra:</span> ${order.piedra}
-  //         </div>
-  //         <div class="detail">
-  //           <span class="label">Largo:</span> ${order.largo}
-  //         </div>
-  //         <div class="detail">
-  //           <span class="label">Observaciones:</span> ${
-  //             order.observaciones || '-'
-  //           }
-  //         </div>
-  //         <div class="detail">
-  //           <span class="label">Fecha de Creación:</span> ${new Date(
-  //             order.created_at,
-  //           ).toLocaleDateString()}
-  //         </div>
-  //       </body>
-  //     </html>
-  //   `;
-  // };
+  const generatePDFContent = (order: any) => {
+    return `
+      <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            h1 { color: #1E3A8A; }
+            .detail { margin: 10px 0; }
+            .label { font-weight: bold; }
+          </style>
+        </head>
+        <body>
+          <h1>Detalles del Pedido</h1>
+          <div class="detail">
+            <span class="label">ID:</span> ${order.id}
+          </div>
+          <div class="detail">
+            <span class="label">Nombre:</span> ${order.nombre_pedido}
+          </div>
+          <div class="detail">
+            <span class="label">Estado:</span> ${order.estado}
+          </div>
+          <div class="detail">
+            <span class="label">Modelo:</span> ${order.modelo}
+          </div>
+          <div class="detail">
+            <span class="label">Número de Piezas:</span> ${order.numero_piezas}
+          </div>
+          <div class="detail">
+            <span class="label">Talla:</span> ${order.talla}
+          </div>
+          <div class="detail">
+            <span class="label">Kilataje:</span> ${order.kilataje}
+          </div>
+          <div class="detail">
+            <span class="label">Color:</span> ${order.color}
+          </div>
+          <div class="detail">
+            <span class="label">Inicial:</span> ${order.inicial}
+          </div>
+          <div class="detail">
+            <span class="label">Piedra:</span> ${order.piedra}
+          </div>
+          <div class="detail">
+            <span class="label">Largo:</span> ${order.largo}
+          </div>
+          <div class="detail">
+            <span class="label">Observaciones:</span> ${
+              order.observaciones || '-'
+            }
+          </div>
+          <div class="detail">
+            <span class="label">Fecha de Creación:</span> ${new Date(
+              order.created_at,
+            ).toLocaleDateString()}
+          </div>
+        </body>
+      </html>
+    `;
+  };
 
-  // const handleDownloadXLS = async (order) => {
-  //   try {
-  //     const filePath = await generateXLSFile(order);
+  const handleDownloadXLS = async (order: any) => {
+    try {
+      const filePath = await generateXLSFile(order);
 
-  //     if (Platform.OS === 'android') {
-  //       const UTI = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-  //       await Sharing.shareAsync(filePath, { UTI });
-  //     } else {
-  //       await Share.share({
-  //         url: filePath,
-  //         title: `Pedido_${order.id}.xlsx`
-  //       });
-  //     }
+      const shareOptions = {
+        title: `Pedido_${order.id}.xlsx`,
+        url: `file://${filePath}`,
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      };
 
-  //   } catch (error) {
-  //     Alert.alert('Error', 'No se pudo generar el archivo XLS');
-  //   }
-  // };
+      await Share.open(shareOptions);
+    } catch (error) {
+      Alert.alert('Error', 'No se pudo generar el archivo XLS');
+    }
+  };
 
-  // const handleDownloadPDF = async (order) => {
-  //   try {
-  //     const htmlContent = generatePDFContent(order);
-  //     const fileName = `Pedido_${order.id}.pdf`;
-  //     const filePath = `${FileSystem.documentDirectory}${fileName}`;
+  const handleDownloadPDF = async (order: any) => {
+    try {
+      const htmlContent = generatePDFContent(order);
+      const fileName = `Pedido_${order.id}.pdf`;
+      const filePath = `${RNFS.DocumentDirectoryPath}${fileName}`;
 
-  //     await FileSystem.writeAsStringAsync(filePath, htmlContent);
+      await RNFS.writeFile(filePath, htmlContent, 'utf8');
 
-  //     if (Platform.OS === 'android') {
-  //       await Sharing.shareAsync(filePath, { UTI: 'application/pdf' });
-  //     } else {
-  //       await Share.share({
-  //         url: filePath,
-  //         title: fileName
-  //       });
-  //     }
-  //   } catch (error) {
-  //     Alert.alert('Error', 'No se pudo generar el archivo PDF');
-  //   }
-  // };
+      const shareOptions = {
+        title: fileName,
+        url: `file://${filePath}`,
+        type: 'application/pdf',
+      };
+
+      await Share.open(shareOptions);
+    } catch (error) {
+      Alert.alert('Error', 'No se pudo generar el archivo PDF');
+    }
+  };
 
   const filteredOrders = orders.filter((order: any) => {
     if (activeTab === 'Todos') {
@@ -374,10 +366,8 @@ const OrderHistoryScreen = () => {
             order={order}
             onCancel={handleCancel}
             onEdit={handleEdit}
-            // onDownloadXLS={handleDownloadXLS}
-            onDownloadXLS={() => {}}
-            // onDownloadPDF={handleDownloadPDF}
-            onDownloadPDF={() => {}}
+            onDownloadXLS={handleDownloadXLS}
+            onDownloadPDF={handleDownloadPDF}
           />
         ))}
       </ScrollView>
