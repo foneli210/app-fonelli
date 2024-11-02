@@ -16,7 +16,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const DashboardScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackProps>>();
 
-
   const handleLogout = async () => {
     Alert.alert('Cerrar Sesión', '¿Está seguro que desea cerrar sesión?', [
       {
@@ -54,13 +53,6 @@ const DashboardScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text>dashbooar</Text>
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => navigation.goBack()}>
-        {/* <Ionicons name="arrow-back" size={24} color="#1E3A8A" /> */}
-      </TouchableOpacity>
-
       <Image
         source={require('../../assets/fonelli-logo.png')}
         style={styles.logo}
@@ -88,7 +80,6 @@ const DashboardScreen = () => {
       </View>
 
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-        {/* <Ionicons name="log-out-outline" size={24} color="#DC2626" /> */}
         <Text style={styles.logoutButtonText}>Cerrar sesión</Text>
       </TouchableOpacity>
     </View>

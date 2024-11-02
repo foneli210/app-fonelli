@@ -18,6 +18,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackProps} from '../../types';
 import IconImage from '../../utils/iconImage';
 import {Icons} from '../../assets/icons';
+import {Picker} from '@react-native-picker/picker';
 
 const NewOrderScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackProps>>();
@@ -27,7 +28,7 @@ const NewOrderScreen = () => {
     numero_piezas: '',
     talla: '',
     kilataje: '',
-    color: '',
+    color: 'Amarillo',
     inicial: '',
     nombre_pedido: '',
     piedra: '',
@@ -233,25 +234,50 @@ const NewOrderScreen = () => {
                 <Text style={styles.required}> *</Text>
               )}
             </Text>
-            <TextInput
-              style={[
-                styles.input,
-                errors[field] ? styles.inputError : null,
-                field === 'observaciones' ? styles.textArea : null,
-              ]}
-              value={formData[field]}
-              onChangeText={value => handleChange(field, value)}
-              placeholder={fieldValidations[field].helper}
-              keyboardType={
-                fieldValidations[field].type === 'number' ||
-                fieldValidations[field].type === 'decimal'
-                  ? 'numeric'
-                  : 'default'
-              }
-              multiline={field === 'observaciones'}
-              numberOfLines={field === 'observaciones' ? 4 : 1}
-              editable={!isLoading}
-            />
+
+            {field === 'kilataje' ? (
+              <Picker
+                selectedValue={formData.kilataje}
+                onValueChange={value => handleChange('kilataje', value)}
+                style={styles.picker}>
+                <Picker.Item label="10k" value="10k" />
+                <Picker.Item label="14k" value="14k" />
+                <Picker.Item label="18k" value="18k" />
+              </Picker>
+            ) : field === 'color' ? (
+              <Picker
+                selectedValue={formData.color}
+                onValueChange={value => handleChange('color', value)}
+                style={styles.picker}>
+                <Picker.Item label="Amarillo" value="Amarillo" />
+                <Picker.Item label="Blanco" value="Blanco" />
+                <Picker.Item label="Rosa" value="Rosa" />
+                <Picker.Item label="Florentino" value="Florentino" />
+                <Picker.Item label="Amarillo/Blanco" value="Amarillo/Blanco" />
+                <Picker.Item label="Blanco/Rosa" value="Blanco/Rosa" />
+                <Picker.Item label="Amarillo/Rosa" value="Amarillo/Rosa" />
+              </Picker>
+            ) : (
+              <TextInput
+                style={[
+                  styles.input,
+                  errors[field] ? styles.inputError : null,
+                  field === 'observaciones' ? styles.textArea : null,
+                ]}
+                value={formData[field]}
+                onChangeText={value => handleChange(field, value)}
+                placeholder={fieldValidations[field]?.helper}
+                keyboardType={
+                  fieldValidations[field]?.type === 'number' ||
+                  fieldValidations[field]?.type === 'decimal'
+                    ? 'numeric'
+                    : 'default'
+                }
+                multiline={field === 'observaciones'}
+                numberOfLines={field === 'observaciones' ? 4 : 1}
+                editable={!isLoading}
+              />
+            )}
             {errors[field] ? (
               <Text style={styles.errorText}>{errors[field]}</Text>
             ) : (
@@ -361,6 +387,15 @@ const styles = StyleSheet.create({
   bottomNavSpacer: {
     height: 80,
   },
+  picker: {
+    height: 50,
+    width: '100%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    borderColor: '#D1D5DB',
+    borderWidth: 1,
+  },
 });
 
 export default NewOrderScreen;
+
