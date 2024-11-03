@@ -1,219 +1,64 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
   View,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
   StyleSheet,
-  Alert,
-  KeyboardAvoidingView,
+  // KeyboardAvoidingView,
   Platform,
+  TouchableOpacity,
+  Text,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {createOrder} from '../../services/api';
+// import {useNavigation} from '@react-navigation/native';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+// import {createOrder} from '../../services/api';
 import BottomNavBar from '../../components/BottomNavBar';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {RootStackProps} from '../../types';
+import Form from '../../components/Form';
 import IconImage from '../../utils/iconImage';
 import {Icons} from '../../assets/icons';
-import {Picker} from '@react-native-picker/picker';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {RootStackProps} from '../../types';
 
 const NewOrderScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackProps>>();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [formData, setFormData] = useState<any>({
-    modelo: '',
-    numero_piezas: '',
-    talla: '',
-    kilataje: '',
-    color: 'Amarillo',
-    inicial: '',
-    nombre_pedido: '',
-    piedra: '',
-    largo: '',
-    observaciones: '',
-  });
 
-  const [errors, setErrors] = useState<any>({});
+  // const handleSubmit = async () => {
+  //   if (!validateForm() || isLoading) {
+  //     Alert.alert('Error', 'Por favor corrija los errores en el formulario');
+  //     return;
+  //   }
 
-  const fieldValidations: any = {
-    modelo: {
-      required: true,
-      maxLength: 50,
-      helper: 'Ingrese el modelo de la joya (máximo 50 caracteres)',
-    },
-    numero_piezas: {
-      required: true,
-      type: 'number',
-      min: 1,
-      max: 1000,
-      helper: 'Ingrese la cantidad de piezas (1-1000)',
-    },
-    talla: {
-      required: true,
-      maxLength: 10,
-      helper: 'Ingrese la talla (ejemplo: 7, 8½)',
-    },
-    kilataje: {
-      required: true,
-      helper: 'Ingrese el kilataje (ejemplo: 14k, 18k, 24k)',
-    },
-    color: {
-      required: true,
-      maxLength: 20,
-      helper: 'Ingrese el color del material',
-    },
-    inicial: {
-      type: 'text',
-      maxLength: 5,
-      helper: 'Ingrese las iniciales (opcional)',
-    },
-    nombre_pedido: {
-      required: true,
-      maxLength: 100,
-      helper: 'Ingrese un nombre para identificar el pedido',
-    },
-    piedra: {
-      maxLength: 50,
-      helper: 'Ingrese el tipo de piedra (opcional)',
-    },
-    largo: {
-      type: 'decimal',
-      min: 0,
-      max: 100,
-      helper: 'Ingrese el largo en centímetros (opcional)',
-    },
-    observaciones: {
-      maxLength: 500,
-      helper: 'Ingrese observaciones adicionales (opcional)',
-    },
-  };
+  //   setIsLoading(true);
+  //   try {
+  //     const userId = await AsyncStorage.getItem('userId');
+  //     if (!userId) {
+  //       throw new Error('No se encontró información del usuario');
+  //     }
 
-  const validateField = (name: any, value: any) => {
-    const validation = fieldValidations[name];
-    if (!validation) {
-      return '';
-    }
+  //     const orderData = {
+  //       ...formData,
+  //       numero_piezas: parseInt(formData.numero_piezas, 10),
+  //       inicial: formData.inicial || null,
+  //       largo: formData.largo ? parseFloat(formData.largo) : null,
+  //       observaciones: formData.observaciones || null,
+  //     };
 
-    if (validation.required && !value) {
-      return 'Este campo es requerido';
-    }
-
-    if (validation.type === 'number') {
-      const numValue = parseInt(value.toString(), 10);
-      if (isNaN(numValue)) {
-        return 'Debe ingresar un número válido';
-      }
-      if (validation.min !== undefined && numValue < validation.min) {
-        return `El valor mínimo es ${validation.min}`;
-      }
-      if (validation.max !== undefined && numValue > validation.max) {
-        return `El valor máximo es ${validation.max}`;
-      }
-    }
-
-    if (validation.type === 'decimal') {
-      const numValue = parseFloat(value);
-      if (value && isNaN(numValue)) {
-        return 'Debe ingresar un número decimal válido';
-      }
-      if (validation.min !== undefined && numValue < validation.min) {
-        return `El valor mínimo es ${validation.min}`;
-      }
-      if (validation.max !== undefined && numValue > validation.max) {
-        return `El valor máximo es ${validation.max}`;
-      }
-    }
-
-    if (validation.maxLength && value.length > validation.maxLength) {
-      return `Máximo ${validation.maxLength} caracteres`;
-    }
-
-    return '';
-  };
-
-  const handleChange = (name: any, value: any) => {
-    // Validación específica por tipo de campo
-    if (fieldValidations[name].type === 'number') {
-      // Solo permitir números
-      value = value.replace(/[^0-9]/g, '');
-    } else if (fieldValidations[name].type === 'decimal') {
-      // Permitir números y un punto decimal
-      value = value.replace(/[^0-9.]/g, '');
-      // Evitar múltiples puntos decimales
-      const parts = value.split('.');
-      if (parts.length > 2) {
-        value = parts[0] + '.' + parts.slice(1).join('');
-      }
-    }
-
-    setFormData((prev: any) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    const error = validateField(name, value);
-    setErrors((prev: any) => ({
-      ...prev,
-      [name]: error,
-    }));
-  };
-
-  const validateForm = () => {
-    const newErrors: {[key: string]: any} = {};
-    let isValid = true;
-
-    Object.keys(formData).forEach(field => {
-      const error = validateField(field, formData[field]);
-      if (error) {
-        newErrors[field] = error;
-        isValid = false;
-      }
-    });
-
-    setErrors(newErrors);
-    return isValid;
-  };
-
-  const handleSubmit = async () => {
-    if (!validateForm() || isLoading) {
-      Alert.alert('Error', 'Por favor corrija los errores en el formulario');
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const userId = await AsyncStorage.getItem('userId');
-      if (!userId) {
-        throw new Error('No se encontró información del usuario');
-      }
-
-      const orderData = {
-        ...formData,
-        numero_piezas: parseInt(formData.numero_piezas, 10),
-        inicial: formData.inicial || null,
-        largo: formData.largo ? parseFloat(formData.largo) : null,
-        observaciones: formData.observaciones || null,
-      };
-
-      await createOrder(orderData);
-      Alert.alert('Éxito', 'Pedido creado correctamente', [
-        {text: 'OK', onPress: () => navigation.navigate('Dashboard')},
-      ]);
-    } catch (error: any) {
-      Alert.alert('Error', error.message || 'No se pudo crear el pedido');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //     await createOrder(orderData);
+  //     Alert.alert('Éxito', 'Pedido creado correctamente', [
+  //       {text: 'OK', onPress: () => navigation.navigate('Dashboard')},
+  //     ]);
+  //   } catch (error: any) {
+  //     Alert.alert('Error', error.message || 'No se pudo crear el pedido');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <View style={styles.header}>
+    <View style={styles.containerGeneral}>
+      {/* <KeyboardAvoidingView
+        style={styles.containerForm}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}> */}
+      {/* <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}>
@@ -295,18 +140,36 @@ const NewOrderScreen = () => {
           <Text style={styles.submitButtonText}>
             {isLoading ? 'Creando pedido...' : 'Crear Pedido'}
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
+      {/* </ScrollView> */}
+      {/* </KeyboardAvoidingView> */}
+      <View style={styles.containerForm}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}>
+            <IconImage size={24} source={Icons.general.arrowLeft} />
+          </TouchableOpacity>
+          <Text style={styles.title}>Nuevo Pedido</Text>
+        </View>
+        <Form />
+      </View>
+      <View style={styles.containerTab}>
         <View style={styles.bottomNavSpacer} />
-      </ScrollView>
-
-      <BottomNavBar />
-    </KeyboardAvoidingView>
+        <BottomNavBar />
+      </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  containerGeneral: {flex: 1, justifyContent: 'space-around'},
+  containerTab: {
+    flex: 1,
+    maxHeight: 80,
+  },
+  containerForm: {
     flex: 1,
     backgroundColor: '#F3F4F6',
   },
@@ -398,4 +261,3 @@ const styles = StyleSheet.create({
 });
 
 export default NewOrderScreen;
-

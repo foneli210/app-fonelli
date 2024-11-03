@@ -23,3 +23,9 @@ export interface IconImageProps {
   size: number;
   source: ImageSourcePropType;
 }
+
+export enum Type {
+  DEFAULT = 'default',
+  EMAIL = 'email-address',
+  NUMBER = 'number-pad',
+}
