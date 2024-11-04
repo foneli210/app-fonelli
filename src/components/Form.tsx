@@ -5,8 +5,9 @@ import CustomInput from './InputNative';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 // import {Type} from '../types';
-import {SelectList} from './selectNative';
+import {SelectListPiece} from './SelectListPiece';
 import {optionsNumber} from '../utils/optionsSelects';
+import OptionalOnePiece from './OptionalOnePiece';
 // import {useForm} from 'react-hook-form';
 // import InputNative from './InputNative';
 
@@ -24,6 +25,12 @@ const Form = () => {
   } = useForm({mode: 'onChange', resolver: yupResolver(Schema)});
 
   const [numberPieces, setNumberPieces] = useState<string>('1');
+  const [numberSize, setNumberSize] = useState<string>('4');
+  const [numberCaracts, setNumberCaracts] = useState<string>('10');
+  const [color, setColor] = useState<string>('Amarillo');
+  const [initials, setInitials] = useState<string>('No aplica');
+  const [rocks, setRocks] = useState<string>('No aplica');
+
   // const {
   //   // control,
   //   // handleSubmit,
@@ -57,15 +64,31 @@ const Form = () => {
         placeholder="Ingresa el modelo"
       />
 
-      <SelectList
+      <SelectListPiece
         options={optionsNumber}
-        label="piezas"
+        label="Piezas"
         onValueChange={value => {
           console.log('la seleccion es', value);
           setNumberPieces(value.toString());
         }}
         selectedValue={numberPieces}
       />
+      {numberPieces === '1' ? (
+        <OptionalOnePiece
+          control={control}
+          errors={errors}
+          onChangeSize={setNumberSize}
+          onChangeCaracts={setNumberCaracts}
+          onChangeColor={setColor}
+          onChangeInitials={setInitials}
+          onChangeRocks={setRocks}
+          selectValueSize={numberSize}
+          selectValueCaracts={numberCaracts}
+          selectValueColor={color}
+          selectValueInitials={initials}
+          selectValueRocks={rocks}
+        />
+      ) : null}
 
       <CustomInput
         control={control}

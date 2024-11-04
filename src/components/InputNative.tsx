@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     padding: 12,
     fontSize: 16,
     backgroundColor: '#fff',
-    height: 200,
+    height: 120,
     textAlignVertical: 'top',
   },
   label: {
