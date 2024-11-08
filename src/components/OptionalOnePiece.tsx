@@ -6,6 +6,7 @@ import {
   optionColor,
   optionsIniitals,
   optionSize,
+  optionsLong,
   optionsRocks,
 } from '../utils/optionsSelects';
 import {SelectListCaracts} from './SelectListCaracts';
@@ -13,6 +14,7 @@ import {SelectListColors} from './SelectListColor';
 import {SelectListInitials} from './SelectListInitials';
 import CustomInput from './InputNative';
 import {SelectListRocks} from './SelectListRocks';
+import {SelectListLong} from './SelectListLong';
 
 interface SelectListSize {
   control: any;
@@ -21,12 +23,14 @@ interface SelectListSize {
   onChangeCaracts: (value: string) => void;
   onChangeColor: (value: string) => void;
   onChangeInitials: (value: string) => void;
-  onChangeRocks: (value: string) => void;
+  onChangeRocks: (value: string[]) => void;
+  onChangeLong: (value: string[]) => void;
   selectValueSize: string;
   selectValueCaracts: string;
   selectValueColor: string;
   selectValueInitials: string;
   selectValueRocks: string;
+  selectValueLong: string;
 }
 
 const OptionalOnePiece: FC<SelectListSize> = ({
@@ -37,12 +41,15 @@ const OptionalOnePiece: FC<SelectListSize> = ({
   onChangeColor = () => {},
   onChangeInitials = () => {},
   onChangeRocks = () => {},
-  selectValueRocks = '',
+  onChangeLong = () => {},
+  selectValueRocks,
+  selectValueLong = '',
   selectValueInitials = '',
   selectValueColor = '',
   selectValueCaracts = '',
   selectValueSize = '',
 }) => {
+  console.log('TCL: onChangeLong -> selectValueRocks', selectValueRocks);
   return (
     <>
       <SelectListSize
@@ -75,34 +82,38 @@ const OptionalOnePiece: FC<SelectListSize> = ({
         }}
         selectedValue={selectValueColor}
       />
-      <SelectListInitials
-        options={optionsIniitals}
-        label="Iniciales"
-        placeholder="Selecciona la talla"
-        onValueChange={value => {
-          console.log('la seleccion de iniciales es', value);
-          onChangeInitials(value);
-        }}
-        selectedValue={selectValueInitials}
+      <SelectListLong
+        label="Largo"
+        onValueChange={onChangeLong}
+        options={optionsLong}
+        selectedValue={selectValueLong}
       />
+      {selectValueLong === 'N/A' ? (
+        <SelectListInitials
+          options={optionsIniitals}
+          label="Iniciales"
+          placeholder="Selecciona la talla"
+          onValueChange={value => {
+            console.log('la seleccion de iniciales es', value);
+            onChangeInitials(value);
+          }}
+          selectedValue={selectValueInitials}
+        />
+      ) : null}
       {selectValueInitials === 'N/A' ? (
         <CustomInput
           control={control}
-          name={'nombre_pedido'}
+          name={'name'}
           label="Nombre"
-          errors={errors.nombre_pedido}
+          errors={errors.name}
           placeholder="“Nuestros diseños respetan mayúsculas y minusculas”"
         />
       ) : null}
       <SelectListRocks
         options={optionsRocks}
-        label="Piedra"
-        placeholder="Selecciona la piedra"
-        onValueChange={value => {
-          console.log('la seleccion es', value);
-          onChangeRocks(value);
-        }}
-        selectedValue={selectValueRocks}
+        label="Piedras"
+        setSelectRocks={onChangeRocks}
+        placeholder={selectValueRocks}
       />
     </>
   );

@@ -1,25 +1,39 @@
-import React from 'react';
-import {
-  View,
-  StyleSheet,
-  // KeyboardAvoidingView,
-  Platform,
-  TouchableOpacity,
-  Text,
-} from 'react-native';
-// import {useNavigation} from '@react-navigation/native';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
-// import {createOrder} from '../../services/api';
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet, Platform, TouchableOpacity, Text} from 'react-native';
 import BottomNavBar from '../../components/BottomNavBar';
 import Form from '../../components/Form';
 import IconImage from '../../utils/iconImage';
 import {Icons} from '../../assets/icons';
-import {useNavigation} from '@react-navigation/native';
+import {RouteProp, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackProps} from '../../types';
+import {getById} from '../../services/apiV2';
 
-const NewOrderScreen = () => {
+type NewOrderScreenRouteProp = RouteProp<RootStackProps, 'NewOrder'>;
+const NewOrderScreen = ({route}: {route: NewOrderScreenRouteProp}) => {
   const navigation = useNavigation<StackNavigationProp<RootStackProps>>();
+  const [dataEdit, setDataedit] = useState<any>({});
+  console.log('TCL: NewOrderScreen -> [dataEdit', dataEdit);
+
+  const isEditId = route?.params?.orderId;
+
+  const getDataEditOrder = async () => {
+    if (!isEditId) {
+      return;
+    }
+    try {
+      const response = await getById(isEditId);
+      console.log('TCL: getDataEditOrder -> response', response);
+      setDataedit(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getDataEditOrder();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isEditId]);
 
   // const handleSubmit = async () => {
   //   if (!validateForm() || isLoading) {
@@ -55,95 +69,6 @@ const NewOrderScreen = () => {
 
   return (
     <View style={styles.containerGeneral}>
-      {/* <KeyboardAvoidingView
-        style={styles.containerForm}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}> */}
-      {/* <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}>
-          <IconImage size={24} source={Icons.general.arrowLeft} />
-        </TouchableOpacity>
-        <Text style={styles.title}>Nuevo Pedido</Text>
-      </View>
-
-      <ScrollView
-        style={styles.formContainer}
-        contentContainerStyle={styles.formContentContainer}
-        showsVerticalScrollIndicator={false}>
-        {Object.keys(formData).map(field => (
-          <View key={field} style={styles.inputContainer}>
-            <Text style={styles.label}>
-              {field.charAt(0).toUpperCase() + field.slice(1).replace('_', ' ')}
-              {fieldValidations[field].required && (
-                <Text style={styles.required}> *</Text>
-              )}
-            </Text>
-
-            {field === 'kilataje' ? (
-              <Picker
-                selectedValue={formData.kilataje}
-                onValueChange={value => handleChange('kilataje', value)}
-                style={styles.picker}>
-                <Picker.Item label="10k" value="10k" />
-                <Picker.Item label="14k" value="14k" />
-                <Picker.Item label="18k" value="18k" />
-              </Picker>
-            ) : field === 'color' ? (
-              <Picker
-                selectedValue={formData.color}
-                onValueChange={value => handleChange('color', value)}
-                style={styles.picker}>
-                <Picker.Item label="Amarillo" value="Amarillo" />
-                <Picker.Item label="Blanco" value="Blanco" />
-                <Picker.Item label="Rosa" value="Rosa" />
-                <Picker.Item label="Florentino" value="Florentino" />
-                <Picker.Item label="Amarillo/Blanco" value="Amarillo/Blanco" />
-                <Picker.Item label="Blanco/Rosa" value="Blanco/Rosa" />
-                <Picker.Item label="Amarillo/Rosa" value="Amarillo/Rosa" />
-              </Picker>
-            ) : (
-              <TextInput
-                style={[
-                  styles.input,
-                  errors[field] ? styles.inputError : null,
-                  field === 'observaciones' ? styles.textArea : null,
-                ]}
-                value={formData[field]}
-                onChangeText={value => handleChange(field, value)}
-                placeholder={fieldValidations[field]?.helper}
-                keyboardType={
-                  fieldValidations[field]?.type === 'number' ||
-                  fieldValidations[field]?.type === 'decimal'
-                    ? 'numeric'
-                    : 'default'
-                }
-                multiline={field === 'observaciones'}
-                numberOfLines={field === 'observaciones' ? 4 : 1}
-                editable={!isLoading}
-              />
-            )}
-            {errors[field] ? (
-              <Text style={styles.errorText}>{errors[field]}</Text>
-            ) : (
-              <Text style={styles.helperText}>
-                {fieldValidations[field].helper}
-              </Text>
-            )}
-          </View>
-        ))}
-
-        <TouchableOpacity
-          style={[styles.submitButton, isLoading && styles.buttonDisabled]}
-          onPress={handleSubmit}
-          disabled={isLoading}>
-          <Text style={styles.submitButtonText}>
-            {isLoading ? 'Creando pedido...' : 'Crear Pedido'}
-          </Text>
-        </TouchableOpacity> */}
-
-      {/* </ScrollView> */}
-      {/* </KeyboardAvoidingView> */}
       <View style={styles.containerForm}>
         <View style={styles.header}>
           <TouchableOpacity
@@ -151,9 +76,13 @@ const NewOrderScreen = () => {
             onPress={() => navigation.goBack()}>
             <IconImage size={24} source={Icons.general.arrowLeft} />
           </TouchableOpacity>
-          <Text style={styles.title}>Nuevo Pedido</Text>
+          {isEditId ? (
+            <Text style={styles.title}>Editando Pedido</Text>
+          ) : (
+            <Text style={styles.title}>Nuevo Pedido</Text>
+          )}
         </View>
-        <Form />
+        <Form dataEdit={dataEdit}/>
       </View>
       <View style={styles.containerTab}>
         <View style={styles.bottomNavSpacer} />

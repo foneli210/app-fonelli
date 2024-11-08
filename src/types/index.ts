@@ -11,12 +11,10 @@ export interface RootStackProps extends ParamListBase {
   Welcome: undefined;
   Login: undefined;
   Dashboard: undefined;
-  NewOrder: undefined;
-  OrderHistory: undefined;
-  EditOrder: {
-    orderId: string;
-    onOrderUpdated: () => Promise<void>;
+  NewOrder: {
+    orderId?: string;
   };
+  OrderHistory: undefined;
 }
 
 export interface IconImageProps {
@@ -28,4 +26,12 @@ export enum Type {
   DEFAULT = 'default',
   EMAIL = 'email-address',
   NUMBER = 'number-pad',
+}
+
+export enum StatusProps {
+  CAUTGHT = 'CAUTGHT',
+  REQUIRED = 'REQUIRED',
+  DELETE = 'DELETE',
+  DELIVERED = 'DELIVERED',
+  CANCELLED = 'CANCELLED',
 }
