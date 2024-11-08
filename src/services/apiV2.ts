@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-const BASE_URI = 'http://192.168.2.6:4000/api/orders';
+const BASE_URI = 'https://backfonelliv2.onrender.com/api/orders';
 
 export const createOrder = async (orderData: any) => {
   const userId = await AsyncStorage.getItem('userId');
