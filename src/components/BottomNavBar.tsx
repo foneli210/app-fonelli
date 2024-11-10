@@ -18,12 +18,9 @@ const BottomNavBar = () => {
   const route = useRoute();
 
   const isActive = (routeName: any) => {
-    // Considera NewOrder como la pantalla "inicio"
     if (routeName === 'NewOrder') {
-      console.log(route.name);
       return route.name === 'NewOrder' || route.name === 'Dashboard';
     }
-    console.log(route.name);
 
     return route.name === routeName;
   };

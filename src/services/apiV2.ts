@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
+// const BASE_URI = 'https://backfonelliv2.onrender.com/api/orders';
 const BASE_URI = 'https://backfonelliv2.onrender.com/api/orders';
 
 export const createOrder = async (orderData: any) => {
@@ -30,6 +31,36 @@ export const createOrder = async (orderData: any) => {
   } catch (error) {
     console.log('TCL: error', error);
     throw new Error('creacion del pedido fallo');
+  }
+};
+
+export const editOrder = async (orderData: any, _idOrder: string) => {
+  const userId = await AsyncStorage.getItem('userId');
+  const OrderData = {
+    ...orderData,
+    customer_id: userId,
+  };
+
+  try {
+    // const token = await AsyncStorage.getItem('userToken');
+    // const userId = await AsyncStorage.getItem('userId');
+    if (!userId) {
+      throw new Error('No se encontró información de autenticación');
+    }
+    // const OrderData = {
+    //   ...orderData,
+    //   customer_id: userId,
+    // };
+    const put = await axios.put(`${BASE_URI}/edit/${_idOrder}`, OrderData, {
+      headers: {
+        // Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    return put.data;
+  } catch (error) {
+    console.log('TCL: error', error);
+    throw new Error('edicion del pedido fallo');
   }
 };
 

@@ -12,6 +12,6 @@ export const Icons = {
   },
   general: {
     arrowLeft: require('./arrowLeft.png'),
-    check: require('./check.png'),
+    // check: require('./check.png'),
   },
 };

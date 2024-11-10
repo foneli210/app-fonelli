@@ -14,7 +14,7 @@ import * as yup from 'yup';
 import {SelectListPiece} from './SelectListPiece';
 import {optionsNumber} from '../utils/optionsSelects';
 import OptionalOnePiece from './OptionalOnePiece';
-import {createOrder} from '../services/apiV2';
+import {editOrder, createOrder} from '../services/apiV2';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackProps, StatusProps} from '../types';
@@ -49,25 +49,18 @@ const Form: FC<FormProps> = ({dataEdit}) => {
       caratage: '10',
       color: 'Amarillo',
       initial: 'No aplica',
+      name: '',
       rocks: ['No aplica'],
       long: '18',
     })),
   );
 
-  // useEffect(()=>{
-  //   if(dataEdit){
-  //     setNumberPieces(dataEdit.pieces);
-  //     setPieceDetails(dataEdit.details.map(detail=>({...detail, rocks: detail.rocks.map((rock: any) => typeof rock ==='string'? rock : rock.label)}))));
-
-  // },[dataEdit])
   useEffect(() => {
     if (dataEdit?._id) {
-      // Rellenar campos básicos
-      setValue('model_name', dataEdit.model_name);
+      setValue('model_name', dataEdit?.model_name);
       setValue('observations', dataEdit.observations);
-      setNumberPieces(dataEdit.piece || '1'); // Ajustar el número de piezas
+      setNumberPieces(dataEdit.piece || '1');
 
-      // Rellenar los detalles de cada pieza incluyendo 'initial'
       if (dataEdit.details) {
         setPieceDetails(
           dataEdit.details.map((detail: any) => ({
@@ -75,6 +68,7 @@ const Form: FC<FormProps> = ({dataEdit}) => {
             caratage: detail.caratage || 'N/A',
             color: detail.color || 'N/A',
             initial: detail.initial || 'No aplica',
+            name: detail.name || '',
             rocks: detail.rocks.map((rock: any) =>
               typeof rock === 'string' ? rock : rock.label,
             ),
@@ -96,6 +90,7 @@ const Form: FC<FormProps> = ({dataEdit}) => {
             caratage: '10',
             color: 'Amarillo',
             initial: 'No aplica',
+            name: '',
             rocks: ['No aplica'],
             long: '18',
           },
@@ -127,14 +122,31 @@ const Form: FC<FormProps> = ({dataEdit}) => {
         details: normalizedDetails,
         status: StatusProps.REQUIRED,
       };
-      await createOrder(orderData);
+      if (!dataEdit._id) {
+        await createOrder(orderData);
+
+        Alert.alert('Pedido Creado', 'El pedido se ha creado correctamente.', [
+          {
+            text: 'OK',
+            onPress: () => navigation.navigate('Dashboard'),
+          },
+        ]);
+      } else {
+        await editOrder(orderData, dataEdit?._id);
+
+        Alert.alert(
+          'Pedido editado',
+          'El pedido se ha editado correctamente.',
+          [
+            {
+              text: 'OK',
+              onPress: () => navigation.navigate('Dashboard'),
+            },
+          ],
+        );
+      }
       reset();
-      Alert.alert('Pedido Creado', 'El pedido se ha creado correctamente.', [
-        {
-          text: 'OK',
-          onPress: () => navigation.navigate('Dashboard'), // Redirigir al Dashboard después de que el usuario cierre el alert
-        },
-      ]);
+      return;
     } catch (error) {
       console.error('Error al crear el pedido:', error);
     } finally {
@@ -178,6 +190,9 @@ const Form: FC<FormProps> = ({dataEdit}) => {
               onChangeInitials={value =>
                 handlePieceDetailChange(index, 'initial', value)
               }
+              onChangeName={value =>
+                handlePieceDetailChange(index, 'name', value)
+              }
               onChangeRocks={value =>
                 handlePieceDetailChange(index, 'rocks', value)
               }
@@ -188,6 +203,7 @@ const Form: FC<FormProps> = ({dataEdit}) => {
               selectValueCaracts={piece.caratage}
               selectValueColor={piece.color}
               selectValueInitials={piece.initial}
+              selectValueName={piece.name}
               selectValueRocks={piece.rocks.toString()}
               selectValueLong={piece.long}
             />

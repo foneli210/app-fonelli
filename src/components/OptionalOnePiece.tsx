@@ -1,5 +1,4 @@
 import React, {FC} from 'react';
-// import {StyleSheet} from 'react-native';
 import {SelectListSize} from './SelectListSize';
 import {
   optionCaracts,
@@ -12,9 +11,9 @@ import {
 import {SelectListCaracts} from './SelectListCaracts';
 import {SelectListColors} from './SelectListColor';
 import {SelectListInitials} from './SelectListInitials';
-import CustomInput from './InputNative';
 import {SelectListRocks} from './SelectListRocks';
 import {SelectListLong} from './SelectListLong';
+import InputControlOff from './InputControlOff';
 
 interface SelectListSize {
   control: any;
@@ -23,33 +22,34 @@ interface SelectListSize {
   onChangeCaracts: (value: string) => void;
   onChangeColor: (value: string) => void;
   onChangeInitials: (value: string) => void;
+  onChangeName: (value: string) => void;
   onChangeRocks: (value: string[]) => void;
   onChangeLong: (value: string[]) => void;
   selectValueSize: string;
   selectValueCaracts: string;
   selectValueColor: string;
   selectValueInitials: string;
+  selectValueName: string;
   selectValueRocks: string;
   selectValueLong: string;
 }
 
 const OptionalOnePiece: FC<SelectListSize> = ({
-  control,
-  errors,
   onChangeSize = () => {},
   onChangeCaracts = () => {},
   onChangeColor = () => {},
   onChangeInitials = () => {},
+  onChangeName = () => {},
   onChangeRocks = () => {},
   onChangeLong = () => {},
   selectValueRocks,
   selectValueLong = '',
   selectValueInitials = '',
+  selectValueName = '',
   selectValueColor = '',
   selectValueCaracts = '',
   selectValueSize = '',
 }) => {
-  console.log('TCL: onChangeLong -> selectValueRocks', selectValueRocks);
   return (
     <>
       <SelectListSize
@@ -57,7 +57,6 @@ const OptionalOnePiece: FC<SelectListSize> = ({
         label="Talla"
         placeholder="Selecciona la talla"
         onValueChange={value => {
-          console.log('la seleccion es', value);
           onChangeSize(value);
         }}
         selectedValue={selectValueSize}
@@ -67,7 +66,6 @@ const OptionalOnePiece: FC<SelectListSize> = ({
         label="Kilataje"
         placeholder="Selecciona el kilate"
         onValueChange={value => {
-          console.log('la seleccion es', value);
           onChangeCaracts(value);
         }}
         selectedValue={selectValueCaracts}
@@ -77,7 +75,6 @@ const OptionalOnePiece: FC<SelectListSize> = ({
         label="Color"
         placeholder="Selecciona la talla"
         onValueChange={value => {
-          console.log('la seleccion es', value);
           onChangeColor(value);
         }}
         selectedValue={selectValueColor}
@@ -94,19 +91,17 @@ const OptionalOnePiece: FC<SelectListSize> = ({
           label="Iniciales"
           placeholder="Selecciona la talla"
           onValueChange={value => {
-            console.log('la seleccion de iniciales es', value);
             onChangeInitials(value);
           }}
           selectedValue={selectValueInitials}
         />
       ) : null}
       {selectValueInitials === 'N/A' ? (
-        <CustomInput
-          control={control}
-          name={'name'}
+        <InputControlOff
           label="Nombre"
-          errors={errors.name}
           placeholder="“Nuestros diseños respetan mayúsculas y minusculas”"
+          onChangeName={onChangeName}
+          selectValueName={selectValueName}
         />
       ) : null}
       <SelectListRocks
@@ -120,4 +115,3 @@ const OptionalOnePiece: FC<SelectListSize> = ({
 };
 
 export default OptionalOnePiece;
-// const styles = StyleSheet.create({container: {}});

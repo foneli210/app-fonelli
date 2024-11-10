@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -8,8 +8,6 @@ import {
   StyleSheet,
   Pressable,
 } from 'react-native';
-import IconImage from '../utils/iconImage';
-import { Icons } from '../assets/icons';
 
 export interface SelectOption {
   label: string;
@@ -35,15 +33,17 @@ export const SelectListRocks: React.FC<SelectListProps> = ({
   label = ' ',
 }) => {
   const [isModalVisible, setModalVisible] = useState<boolean>(false);
-  const [itemsOptions, setItemsOptions] = useState<optionNewObj[]>([...options]);
+  const [itemsOptions, setItemsOptions] = useState<optionNewObj[]>([
+    ...options,
+  ]);
 
   const [itemsSelect, setItemsSelect] = useState<optionNewObj[]>([]);
 
   useEffect(() => {
     setItemsOptions(
       options.filter(
-        item => !itemsSelect.some(selected => selected.value === item.value)
-      )
+        item => !itemsSelect.some(selected => selected.value === item.value),
+      ),
     );
   }, [itemsSelect, options]);
 
@@ -74,7 +74,6 @@ export const SelectListRocks: React.FC<SelectListProps> = ({
     setModalVisible(false);
   };
 
-  // Placeholder dinámico basado en las opciones seleccionadas
   const placeholderText =
     itemsSelect.length > 0
       ? `Seleccionados: ${itemsSelect.map(item => item.label).join(', ')}`
@@ -118,13 +117,14 @@ export const SelectListRocks: React.FC<SelectListProps> = ({
                 <FlatList
                   data={itemsSelect}
                   keyExtractor={item => item.value}
-                  renderItem={({ item }) => (
+                  renderItem={({item}) => (
                     <TouchableOpacity
                       onPress={() => handleDeleteOptionPress(item.value)}
                       style={styles.option}>
                       <View style={styles.containerItemInt}>
-                        <Text style={styles.optionText}>{` ${item.label}`}</Text>
-                        <IconImage source={Icons.general.check} size={14} />
+                        <Text
+                          style={styles.optionText}>{` ${item.label}`}</Text>
+                        {/* <IconImage source={Icons.general.check} size={14} /> */}
                       </View>
                     </TouchableOpacity>
                   )}
@@ -142,7 +142,7 @@ export const SelectListRocks: React.FC<SelectListProps> = ({
               <FlatList
                 data={itemsOptions}
                 keyExtractor={item => item.value}
-                renderItem={({ item }) => (
+                renderItem={({item}) => (
                   <TouchableOpacity
                     onPress={() => handleOptionPress(item.value)}
                     style={styles.option}>
@@ -163,18 +163,13 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   containerBtn: {
-    borderWidth: 1,
     borderColor: '#000',
     flexDirection: 'row',
   },
   containerDown: {
-    borderWidth: 2,
-    borderColor: '#e1ff00',
     flex: 1,
   },
   selector: {
-    borderWidth: 1,
-    borderColor: '#000',
     borderRadius: 10,
     padding: 12,
     fontSize: 16,
@@ -195,22 +190,19 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#ff0000',
   },
   modalContainer: {
     width: '100%',
     backgroundColor: 'white',
     borderRadius: 10,
     padding: 20,
-    borderWidth: 2,
-    borderColor: '#ee00ff',
+
     flex: 1,
   },
   option: {
     padding: 10,
     borderColor: '#eee',
-    borderWidth: 2,
+    borderWidth: 1,
   },
   containerItemInt: {
     flexDirection: 'row',
@@ -237,9 +229,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#fff',
   },
-  btnClose: {
-    borderWidth: 2,
-  },
+  btnClose: {},
   containerFlexBox: {
     flex: 1,
     paddingHorizontal: 40,
@@ -262,5 +252,3 @@ const styles = StyleSheet.create({
     color: '#7c7c7c',
   },
 });
-
-

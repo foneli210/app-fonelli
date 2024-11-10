@@ -13,7 +13,6 @@ type NewOrderScreenRouteProp = RouteProp<RootStackProps, 'NewOrder'>;
 const NewOrderScreen = ({route}: {route: NewOrderScreenRouteProp}) => {
   const navigation = useNavigation<StackNavigationProp<RootStackProps>>();
   const [dataEdit, setDataedit] = useState<any>({});
-  console.log('TCL: NewOrderScreen -> [dataEdit', dataEdit);
 
   const isEditId = route?.params?.orderId;
 
@@ -23,7 +22,6 @@ const NewOrderScreen = ({route}: {route: NewOrderScreenRouteProp}) => {
     }
     try {
       const response = await getById(isEditId);
-      console.log('TCL: getDataEditOrder -> response', response);
       setDataedit(response);
     } catch (error) {
       console.error(error);
